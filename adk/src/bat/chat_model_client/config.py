@@ -1,18 +1,25 @@
 import os
+from ..logging import create_logger
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Dict, Optional
 from typing_extensions import Literal
 
+logger = create_logger(__name__, "debug")
+
 ModelProvider = Literal[
-    "openai",
+    "anthropic",
+    "deepseek",
     "nvidia",
     "ollama",
+    "openai",
 ]
 """`ModelProvider` is a type alias for the supported model providers.
 The currently supported providers are:
-- `openai`
+- `anthropic`
+- `deepseek`
 - `nvidia`
 - `ollama`
+- `openai`
 """
 
 class ChatModelClientConfig(BaseModel):
@@ -51,7 +58,7 @@ class ChatModelClientConfig(BaseModel):
     ```
     """
 
-    class Config:
+    class ConfigDict:
         arbitrary_types_allowed = True
 
     model: str
@@ -132,3 +139,19 @@ class ChatModelClientConfig(BaseModel):
             base_url=base_url,
             client_name=client_name,
         )
+    
+    def build_default_headers(
+        self,
+    ) -> Dict[str, str]:
+        if self.model_provider == "nvidia":
+            api_key = os.getenv("API_KEY")
+            if api_key is None:
+                logger.warning("API_KEY environment variable not set")
+                api_key = "<not-used>"
+            result = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            }
+        else:
+            result = {}
+        return result
