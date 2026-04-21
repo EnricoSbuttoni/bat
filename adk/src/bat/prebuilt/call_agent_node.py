@@ -4,7 +4,7 @@ import warnings
 from ..agent.config import AgentConfig
 from ..agent.metadata import MetadataCollector
 from ..agent.state import AgentState
-from ..chat_model_client import UsageMetadata
+from ..agent.metadata import UsageMetadata
 from ..logging import create_logger
 from .prebuilt_workflow import PrebuiltWorkflow
 from a2a.client import ClientConfig, ClientEvent, ClientFactory

@@ -2,7 +2,7 @@ import bisect
 import time
 from ..logging import create_logger
 from .config import ChatModelClientConfig
-from .metadata import UsageMetadata
+from ..agent.metadata import UsageMetadata
 from functools import reduce
 from langchain_core.messages import (
     AIMessage,
